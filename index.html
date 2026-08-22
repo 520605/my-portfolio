@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>陈潇然 · 工作台</title>
+    <style>
+        /* ===== CSS 变量 ===== */
+        :root {
+            --bg: #f1f5f9;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --text: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --primary-light: #e0f2fe;
+            --primary-bg: #f0f9ff;
+            --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+            --shadow-hover: 0 8px 30px rgba(14,165,233,0.12);
+            --radius: 12px;
+            --radius-lg: 16px;
+            --border: #e2e8f0;
+            --sidebar-width: 220px;
+            --transition: 0.25s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --bg-sidebar: #1e293b;
+            --bg-card: #1e293b;
+            --text: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --primary: #38bdf8;
+            --primary-dark: #7dd3fc;
+            --primary-light: #1e293b;
+            --primary-bg: #1e293b;
+            --shadow: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-hover: 0 8px 30px rgba(56,189,248,0.08);
+            --border: #334155;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: background var(--transition), color var(--transition);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* ===== 侧边栏 ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            padding: 24px 16px 20px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            transition: background var(--transition), border var(--transition);
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-brand {
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-brand .name {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.3px;
+        }
+        .sidebar-brand .name span { color: var(--primary-dark); }
+
+        .sidebar-brand .title {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .sidebar-brand .skills-mini {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: 10px;
+        }
+        .sidebar-brand .skills-mini span {
+            font-size: 11px;
+            background: var(--primary-bg);
+            color: var(--primary-dark);
+            padding: 2px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--primary);
+        }
+
+        /* ===== 导航 ===== */
+        .sidebar-nav { flex: 1; }
+        .sidebar-nav .nav-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+            padding: 0 12px 8px;
+            font-weight: 600;
+        }
+        .sidebar-nav .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            margin-bottom: 2px;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+            font-weight: 500;
+        }
+        .sidebar-nav .nav-item:hover {
+            background: var(--primary-bg);
+            color: var(--text);
+        }
+        .sidebar-nav .nav-item.active {
+            background: var(--primary-bg);
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+        .sidebar-nav .nav-item .icon { font-size: 16px; }
+        .sidebar-nav .nav-item .count {
+            margin-left: auto;
+            font-size: 12px;
+            color: var(--text-muted);
+            background: var(--bg);
+            padding: 0 10px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        .sidebar-nav .nav-item.active .count {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* ===== 底部 ===== */
+        .sidebar-footer {
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+        }
+        .sidebar-footer .theme-toggle {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            padding: 6px 14px;
+            font-size: 13px;
+            cursor: pointer;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+            width: 100%;
+            justify-content: center;
+        }
+        .sidebar-footer .theme-toggle:hover {
+            background: var(--primary-bg);
+        }
+        .sidebar-footer .footer-links {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+            justify-content: center;
+            font-size: 13px;
+        }
+        .sidebar-footer .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .sidebar-footer .footer-links a:hover {
+            color: var(--primary-dark);
+        }
+
+        /* ===== 主区域 ===== */
+        .main {
+            flex: 1;
+            padding: 24px 32px 32px;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        /* ===== 统计卡片 ===== */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+        .stats .stat-item {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: background var(--transition), border var(--transition);
+        }
+        .stats .stat-item .num {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+        .stats .stat-item .label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* ===== 项目标题 ===== */
+        .main-header {
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+        }
+        .main-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+        .main-header h2 span { color: var(--text-secondary); font-weight: 400; font-size: 15px; margin-left: 8px; }
+        .main-header .sub {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* ===== 项目网格 ===== */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 20px;
+        }
+
+        /* ===== 项目卡片 ===== */
+        .project-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            padding: 16px 18px 16px;
+            border: 1px solid var(--border);
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary);
+        }
+
+        .project-card .card-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background: var(--primary-bg);
+            border: 1px solid var(--border);
+        }
+
+        .project-card .category-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            background: var(--primary-bg);
+            padding: 2px 12px;
+            border-radius: 12px;
+            margin-bottom: 6px;
+            border: 1px solid var(--primary);
+            letter-spacing: 0.3px;
+            align-self: flex-start;
+        }
+
+        .project-card .card-title {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .project-card .card-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin: 2px 0 10px;
+            line-height: 1.5;
+            flex: 1;
+        }
+        .project-card .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        .project-card .card-tags span {
+            font-size: 12px;
+            background: var(--primary-bg);
+            color: var(--primary-dark);
+            padding: 2px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--primary);
+            font-weight: 500;
+        }
+
+        .project-card .card-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-top: 4px;
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+        }
+        .project-card .card-actions .action-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--primary-dark);
+            background: var(--primary-bg);
+            border: 1px solid var(--primary);
+            padding: 5px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .project-card .card-actions .action-link:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+        .project-card .card-actions .action-link.disabled {
+            opacity: 0.35;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .project-card .card-actions .copy-btn {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 13px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .project-card .card-actions .copy-btn:hover {
+            background: var(--primary-bg);
+            color: var(--primary-dark);
+            border-color: var(--primary);
+        }
+        .copy-feedback {
+            font-size: 12px;
+            color: #22c55e;
+            margin-left: 4px;
+        }
+
+        /* ===== 空状态 ===== */
+        .empty-state {
+            color: var(--text-secondary);
+            font-size: 14px;
+            padding: 40px 20px;
+            text-align: center;
+            border: 2px dashed var(--border);
+            border-radius: var(--radius-lg);
+            opacity: 0.6;
+        }
+
+        /* ===== 滚动条 ===== */
+        .main::-webkit-scrollbar,
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .main::-webkit-scrollbar-thumb,
+        .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 768px) {
+            body { flex-direction: column; height: auto; }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 16px 20px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 6px 16px;
+            }
+            .sidebar-brand {
+                border-bottom: none;
+                padding-bottom: 0;
+                margin-bottom: 0;
+                flex: 1;
+                min-width: 140px;
+            }
+            .sidebar-brand .skills-mini { display: none; }
+            .sidebar-nav {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 4px;
+                flex: 1;
+                order: 3;
+                width: 100%;
+                margin-top: 6px;
+            }
+            .sidebar-nav .nav-label { display: none; }
+            .sidebar-nav .nav-item {
+                padding: 6px 14px;
+                font-size: 13px;
+                width: auto;
+                flex: 1 0 auto;
+            }
+            .sidebar-footer {
+                border-top: none;
+                padding-top: 0;
+                margin-top: 0;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                flex-shrink: 0;
+            }
+            .sidebar-footer .footer-links { margin-top: 0; }
+            .main { padding: 16px 18px; height: auto; }
+            .project-grid { grid-template-columns: 1fr; }
+            .main-header { flex-direction: column; align-items: flex-start; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .sidebar { padding: 12px 14px; }
+            .sidebar-brand .name { font-size: 17px; }
+            .main-header h2 { font-size: 18px; }
+            .stats { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 侧边栏 ===== -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="name">🧊 <span>陈潇然</span></div>
+            <div class="title">软件工程 · 应届毕业生</div>
+            <div class="skills-mini" id="skillsMini"></div>
+        </div>
+
+        <nav class="sidebar-nav" id="navContainer">
+            <!-- 由 JS 渲染 -->
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="theme-toggle" id="themeToggle">
+                <span id="themeIcon">🌙</span> <span id="themeLabel">深色</span>
+            </button>
+            <div class="footer-links">
+                <a href="https://github.com/520605" target="_blank">GitHub</a>
+                <a href="mailto:3550140368@qq.com">Email</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ===== 主内容 ===== -->
+    <main class="main">
+        <!-- 统计卡片 -->
+        <div class="stats" id="statsContainer">
+            <!-- 由 JS 渲染 -->
+        </div>
+
+        <div class="main-header">
+            <h2 id="categoryTitle">全部 <span>项目</span></h2>
+            <div class="sub" id="categorySub">共 <span id="totalCount">0</span> 个项目</div>
+        </div>
+
+        <div id="projectGrid" class="project-grid"></div>
+    </main>
+
+    <script>
+        // ============================================================
+        //  配置 —— 改这里
+        // ============================================================
+
+        const skills = ['Java', 'Python', 'AI/LLM', 'HTML/CSS/JS', 'Netlify'];
+
+        const projects = [{
+            id: 'p1',
+            category: '办公助手',
+            title: '智能数据分析助手',
+            desc: '对话式数据分析工具，上传Excel/CSV用自然语言提问自动生成图表',
+            tags: ['Python', 'FastAPI', 'AI/LLM'],
+            image: 'images/data-analysis.png',
+            github: 'https://github.com/520605/data-analysis-agent-2026',
+            demo: '',
+            detail: '用户上传数据文件，用自然语言提问，AI自动完成分析并生成图表。支持数据质量检测、关键发现置顶、分析代码透明展示。'
+        }, {
+            id: 'p2',
+            category: '办公助手',
+            title: '文字转待办清单',
+            desc: '上传图片，AI自动提取文字并生成可勾选的待办任务清单',
+            tags: ['HTML', 'JavaScript', 'AI/LLM'],
+            image: 'images/todo.png',
+            github: 'https://github.com/520605/text-to-todo',
+            demo: 'https://eceaf745.todo-195.pages.dev/',
+            detail: '用户上传图片（手写清单、会议白板、任务截图等），使用Tesseract.js识别文字，调用MiMo API整理成结构化任务清单，支持打勾完成、进度追踪、本地持久化保存。'
+        }, {
+            id: 'p3',
+            category: '休闲娱乐项目',
+            title: '合成大西瓜',
+            desc: '经典合成类休闲游戏，水果合成玩法',
+            tags: ['HTML', 'Canvas', 'JavaScript'],
+            image: 'images/watermelon.png',
+            github: 'https://github.com/520605/watermelon-game',
+            demo: 'https://vocal-elf-18c691.netlify.app',
+            detail: '经典合成大西瓜游戏，相同水果碰撞合成为更大水果，目标合成大西瓜。'
+        }, {
+            id: 'p4',
+            category: '休闲娱乐项目',
+            title: '末日炮塔打僵尸',
+            desc: '射击生存游戏，操控炮塔抵御僵尸波次进攻',
+            tags: ['HTML', 'Canvas', 'JavaScript'],
+            image: 'images/zombie.png',
+            github: 'https://github.com/520605/zombie-shooter',
+            demo: 'https://zippy-fairy-6a0beb.netlify.app',
+            detail: '末日主题的射击生存游戏。玩家控制炮塔瞄准射击，抵御一波波僵尸进攻。包含炮塔升级系统、波次系统、生命值和金币机制。'
+        }, {
+            id: 'p5',
+            category: '其他作品',
+            title: '严肃等待中...',
+            tags: ['AE', '剪辑'],
+            image: '',
+            github: '',
+            demo: '',
+            detail: '这里放你的其他类型作品，可以是设计、视频、摄影等。'
+        }];
+
+        // ============================================================
+        //  渲染 —— 不用动
+        // ============================================================
+
+        const categories = ['全部', ...new Set(projects.map(p => p.category))];
+
+        function renderSkills() {
+            document.getElementById('skillsMini').innerHTML = skills.map(s => `<span>${s}</span>`).join('');
+        }
+
+        function renderStats() {
+            const container = document.getElementById('statsContainer');
+            const total = projects.length;
+            const catCount = categories.length - 1;
+            const gameCount = projects.filter(p => p.category === '休闲娱乐项目').length;
+            const toolCount = projects.filter(p => p.category === '办公助手').length;
+            container.innerHTML = `
+                <div class="stat-item"><div class="num">${total}</div><div class="label">📦 总项目</div></div>
+                <div class="stat-item"><div class="num">${catCount}</div><div class="label">📂 分类数</div></div>
+                <div class="stat-item"><div class="num">${toolCount}</div><div class="label">📊 办公助手</div></div>
+                <div class="stat-item"><div class="num">${gameCount}</div><div class="label">🎮 休闲娱乐</div></div>
+            `;
+        }
+
+        function renderNav(active) {
+            const container = document.getElementById('navContainer');
+            const iconMap = { '全部': '📋', '办公助手': '📊', '休闲娱乐项目': '🎮', '其他作品': '🎨' };
+            let html = `<div class="nav-label">项目分类</div>`;
+            categories.forEach(cat => {
+                const count = cat === '全部' ? projects.length : projects.filter(p => p.category === cat).length;
+                const activeClass = cat === active ? 'active' : '';
+                html += `
+                    <button class="nav-item ${activeClass}" data-category="${cat}">
+                        <span class="icon">${iconMap[cat] || '📁'}</span>
+                        ${cat}
+                        <span class="count">${count}</span>
+                    </button>
+                `;
+            });
+            container.innerHTML = html;
+            container.querySelectorAll('.nav-item').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const cat = this.dataset.category;
+                    renderNav(cat);
+                    renderProjects(cat);
+                    updateHeader(cat);
+                });
+            });
+        }
+
+        function updateHeader(category) {
+            const count = category === '全部' ? projects.length : projects.filter(p => p.category === category).length;
+            document.getElementById('categoryTitle').innerHTML = `${category} <span>项目</span>`;
+            document.getElementById('categorySub').innerHTML = `共 <span id="totalCount">${count}</span> 个项目`;
+        }
+
+        function renderProjects(category) {
+            const grid = document.getElementById('projectGrid');
+            const filtered = category === '全部' ? projects : projects.filter(p => p.category === category);
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="empty-state">这个分类还没有项目，后续会添加 🚀</div>`;
+                return;
+            }
+            let html = '';
+            filtered.forEach(p => {
+                const imageHtml = p.image ? `<img class="card-image" src="${p.image}" alt="${p.title}" />` : '';
+                const githubLink = p.github ? `<a href="${p.github}" target="_blank" class="action-link">📂 GitHub</a>` :
+                    `<span class="action-link disabled">📂 GitHub</span>`;
+                const demoLink = p.demo ? `<a href="${p.demo}" target="_blank" class="action-link">🚀 在线体验</a>` :
+                    `<span class="action-link disabled">🚀 在线体验</span>`;
+                html += `
+                    <div class="project-card">
+                        ${imageHtml}
+                        <span class="category-badge">${p.category}</span>
+                        <div class="card-title">${p.title}</div>
+                        <div class="card-desc">${p.desc}</div>
+                        <div class="card-tags">${p.tags.map(t => `<span>${t}</span>`).join('')}</div>
+                        <div class="card-actions">
+                            ${githubLink}
+                            ${demoLink}
+                            <button class="copy-btn" data-id="${p.id}">📋 复制</button>
+                            <span class="copy-feedback" id="feedback-${p.id}"></span>
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+            grid.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const proj = projects.find(p => p.id === id);
+                    if (!proj) return;
+                    const text =
+                        `【${proj.title}】\n${proj.desc}\n${proj.detail || ''}\nGitHub: ${proj.github || '未公开'}\n体验: ${proj.demo || '暂未部署'}`;
+                    navigator.clipboard.writeText(text).then(() => {
+                        const fb = document.getElementById(`feedback-${id}`);
+                        fb.textContent = '✅ 已复制';
+                        setTimeout(() => { fb.textContent = ''; }, 2000);
+                    }).catch(() => {
+                        const fb = document.getElementById(`feedback-${id}`);
+                        fb.textContent = '❌ 复制失败';
+                        setTimeout(() => { fb.textContent = ''; }, 2000);
+                    });
+                });
+            });
+        }
+
+        // ===== 主题 =====
+        function getTheme() { return localStorage.getItem('theme') || 'light'; }
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            document.getElementById('themeIcon').textContent = theme === 'dark' ? '☀️' : '🌙';
+            document.getElementById('themeLabel').textContent = theme === 'dark' ? '亮色' : '深色';
+        }
+
+        // ===== 启动 =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const theme = getTheme();
+            setTheme(theme);
+            document.getElementById('themeToggle').addEventListener('click', function() {
+                const current = document.documentElement.getAttribute('data-theme');
+                setTheme(current === 'dark' ? 'light' : 'dark');
+            });
+            renderSkills();
+            renderStats();
+            const defaultCat = '全部';
+            renderNav(defaultCat);
+            renderProjects(defaultCat);
+            updateHeader(defaultCat);
+        });
+    </script>
+
+</body>
+</html>
